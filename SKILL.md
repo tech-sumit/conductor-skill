@@ -41,16 +41,16 @@ deployment-agnostic — set the connection via env (no values hardcoded except t
 
 | env | meaning |
 |---|---|
-| `CONDUCTOR_CORE_URL` | core base URL (default: the hosted reference instance; set for self-hosted) |
-| `CONDUCTOR_TOKEN` | a Google ID token (audience = core URL) — bring your own, **or** leave unset to mint |
-| `CONDUCTOR_AGENT_SA` | mint a token by impersonating your agent's service account |
-| `CONDUCTOR_PROJECT` / `CONDUCTOR_BOARD` | the project/board the worker + fleet operate on |
+| `BATONDECK_CORE_URL` | core base URL (default: the hosted reference instance; set for self-hosted) |
+| `BATONDECK_TOKEN` | a Google ID token (audience = core URL) — bring your own, **or** leave unset to mint |
+| `BATONDECK_AGENT_SA` | mint a token by impersonating your agent's service account |
+| `BATONDECK_PROJECT` / `BATONDECK_BOARD` | the project/board the worker + fleet operate on |
 
 Mint a token for your agent service account (or just `eval "$(scripts/token.sh)"`):
 
 ```bash
 gcloud auth print-identity-token --impersonate-service-account="<agent-sa-email>" \
-  --audiences="$CONDUCTOR_CORE_URL"
+  --audiences="$BATONDECK_CORE_URL"
 ```
 
 Your SA needs `roles/run.invoker` on the core (an operator grants this — e.g. the BatonDeck repo's
@@ -64,10 +64,10 @@ this skill maps to `scripts/mcp.sh tool '{ … }'`** (it opens the session, atta
 the result). Auth once, then call:
 
 ```bash
-eval "$(scripts/token.sh)"                              # exports CONDUCTOR_TOKEN (or set CONDUCTOR_AGENT_SA)
-export CONDUCTOR_PROJECT=P-…  CONDUCTOR_BOARD=B-…
+eval "$(scripts/token.sh)"                              # exports BATONDECK_TOKEN (or set BATONDECK_AGENT_SA)
+export BATONDECK_PROJECT=P-…  BATONDECK_BOARD=B-…
 scripts/mcp.sh list_projects '{}'
-scripts/mcp.sh next_task "{\"projectId\":\"$CONDUCTOR_PROJECT\",\"boardId\":\"$CONDUCTOR_BOARD\"}"
+scripts/mcp.sh next_task "{\"projectId\":\"$BATONDECK_PROJECT\",\"boardId\":\"$BATONDECK_BOARD\"}"
 ```
 
 The rest of this skill writes calls as `tool { … }`; run them through your client **or**
@@ -105,7 +105,7 @@ cat > plan.json <<'JSON'
   { "key": "ui",      "title": "Build the X UI",       "description": "…", "blockedBy": ["api"] }
 ] }
 JSON
-scripts/seed-tasknet.py plan.json     # projectId/boardId from the plan or $CONDUCTOR_PROJECT/$CONDUCTOR_BOARD
+scripts/seed-tasknet.py plan.json     # projectId/boardId from the plan or $BATONDECK_PROJECT/$BATONDECK_BOARD
 ```
 
 Build it incrementally instead (when iterating) with `add_subtask` / `add_dependency` via your client
@@ -213,8 +213,8 @@ how many can actually run, and that number **grows as work completes**:
   completes/blocks/hands off per this skill:
 
   ```bash
-  export CONDUCTOR_AGENT_SA=my-agent@proj.iam.gserviceaccount.com   # or CONDUCTOR_TOKEN=<id-token>
-  export CONDUCTOR_PROJECT=P-…  CONDUCTOR_BOARD=B-…
+  export BATONDECK_AGENT_SA=my-agent@proj.iam.gserviceaccount.com   # or BATONDECK_TOKEN=<id-token>
+  export BATONDECK_PROJECT=P-…  BATONDECK_BOARD=B-…
   export AGENT_CMD='claude -p "Work BatonDeck task $1 (lease $2) per the batondeck-worker skill: \
                      get_task_context, do it, heartbeat, then complete_task (or block/handoff)."'
   MAX_AGENTS=12 scripts/fleet.sh                      # or MAX_AGENTS=auto (default)
@@ -227,7 +227,7 @@ how many can actually run, and that number **grows as work completes**:
 
 Bundled with this skill under `scripts/` (self-contained; configured by the env in **Connect**):
 
-- `token.sh` — mint `CONDUCTOR_TOKEN`: `eval "$(scripts/token.sh)"`.
+- `token.sh` — mint `BATONDECK_TOKEN`: `eval "$(scripts/token.sh)"`.
 - `mcp.sh <tool> '<json-args>'` — one-shot MCP tool call (own session); the building block for shell
   automation, e.g. `scripts/mcp.sh next_task '{"projectId":"P-…","boardId":"B-…"}'`.
 - `seed-tasknet.py <plan.json>` — plant a whole **dependency tree** from a JSON plan (tasks +

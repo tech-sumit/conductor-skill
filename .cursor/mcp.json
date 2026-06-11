@@ -1,16 +1,16 @@
 {
   "mcpServers": {
-    "conductor": {
+    "batondeck": {
       "command": "npx",
       "args": [
         "-y",
         "mcp-remote",
-        "https://conductor-mcp-hn5syhhsja-el.a.run.app/mcp",
+        "https://mcp.batondeck.com/mcp",
         "--header",
-        "X-Conductor-Agent:${CONDUCTOR_AGENT}"
+        "X-BatonDeck-Agent:${BATONDECK_AGENT}"
       ],
       "env": {
-        "CONDUCTOR_AGENT": "my-agent"
+        "BATONDECK_AGENT": "my-agent"
       }
     }
   }

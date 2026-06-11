@@ -1,4 +1,4 @@
-> **Superseded by [conductor-plugin](https://github.com/tech-sumit/batondeck-plugin)** — the installable plugin (Claude Code + Cursor marketplaces, release zips) built from this content. This repo remains as the source archive.
+> **Superseded by [batondeck-plugin](https://github.com/tech-sumit/batondeck-plugin)** — the installable plugin (Claude Code + Cursor marketplaces, release zips) built from this content. This repo remains as the source archive.
 
 # batondeck-skill
 
@@ -33,8 +33,8 @@ script path is kept as an optional advanced/headless option.
    ```
 2. **Rule** — `.cursor/rules/batondeck-worker.mdc` is picked up automatically; Cursor's agent applies
    it whenever you ask it to plan or work the BatonDeck board.
-3. **MCP server** — enable `conductor` in **Cursor Settings → MCP**. `.cursor/mcp.json` already points
-   `mcp-remote` at the hosted MCP endpoint (`https://conductor-mcp-…/mcp`); on first use Cursor opens a
+3. **MCP server** — enable `batondeck` in **Cursor Settings → MCP**. `.cursor/mcp.json` already points
+   `mcp-remote` at the hosted MCP endpoint (`https://batondeck-mcp-…/mcp`); on first use Cursor opens a
    browser to sign in with Google, then the tools are available natively. To point at a different core URL, change
    the URL in `.cursor/mcp.json` to your own mcp-gateway `/mcp`.
 4. **Or skip MCP** and let the agent use the terminal scripts directly — see the advanced Quickstart.
@@ -56,11 +56,11 @@ For interactive use prefer the MCP server above (browser OAuth, no gcloud). The 
 optional headless path: they mint a Google ID token with your own `gcloud` and call the core directly.
 
 ```bash
-export CONDUCTOR_AGENT_SA=my-agent@my-proj.iam.gserviceaccount.com   # or leave unset to use your gcloud login
-eval "$(scripts/token.sh)"                                           # exports CONDUCTOR_TOKEN
+export BATONDECK_AGENT_SA=my-agent@my-proj.iam.gserviceaccount.com   # or leave unset to use your gcloud login
+eval "$(scripts/token.sh)"                                           # exports BATONDECK_TOKEN
 scripts/mcp.sh list_projects '{}'                                    # discover your projects
-export CONDUCTOR_PROJECT=P-…  CONDUCTOR_BOARD=B-…
-scripts/mcp.sh next_task "{\"projectId\":\"$CONDUCTOR_PROJECT\",\"boardId\":\"$CONDUCTOR_BOARD\"}"
+export BATONDECK_PROJECT=P-…  BATONDECK_BOARD=B-…
+scripts/mcp.sh next_task "{\"projectId\":\"$BATONDECK_PROJECT\",\"boardId\":\"$BATONDECK_BOARD\"}"
 ```
 
 Every `tool { … }` in the rule/skill maps to `scripts/mcp.sh tool '{ … }'`.
@@ -70,10 +70,10 @@ Every `tool { … }` in the rule/skill maps to `scripts/mcp.sh tool '{ … }'`.
 | Path | Purpose |
 |---|---|
 | `.cursor/rules/batondeck-worker.mdc` | Cursor rule — the planner/worker playbook |
-| `.cursor/mcp.json` | Cursor MCP server (`conductor`) — `mcp-remote` → the mcp-gateway `/mcp` (OAuth browser flow) |
+| `.cursor/mcp.json` | Cursor MCP server (`batondeck`) — `mcp-remote` → the mcp-gateway `/mcp` (OAuth browser flow) |
 | `SKILL.md` | Claude Code skill (same playbook) |
 | `references/tools.md` | Full MCP tool list + error codes |
-| `scripts/token.sh` | *(advanced)* mint `CONDUCTOR_TOKEN` (Google ID token) via `gcloud` |
+| `scripts/token.sh` | *(advanced)* mint `BATONDECK_TOKEN` (Google ID token) via `gcloud` |
 | `scripts/mcp.sh` | *(advanced)* one-shot MCP tool caller (own session) — the headless shell building block |
 | `scripts/cursor-mcp.sh` | *(advanced)* gcloud-token launcher that bridges stdio↔HTTP via `mcp-remote` |
 | `scripts/seed-tasknet.py` | plant a whole dependency tree from a JSON plan in one session |
@@ -84,11 +84,11 @@ Every `tool { … }` in the rule/skill maps to `scripts/mcp.sh tool '{ … }'`.
 
 | env | meaning |
 |---|---|
-| `CONDUCTOR_CORE_URL` | core base URL (default: the hosted reference instance; set to override the default) |
-| `CONDUCTOR_TOKEN` | a Google ID token (audience = core URL) — bring your own, or leave unset to mint |
-| `CONDUCTOR_AGENT_SA` | mint a token by impersonating your agent's service account |
-| `CONDUCTOR_ON_BEHALF_OF` | optional on-behalf-of identity (only when authing as a trusted gateway SA) |
-| `CONDUCTOR_PROJECT` / `CONDUCTOR_BOARD` | the project/board the worker + fleet operate on |
+| `BATONDECK_CORE_URL` | core base URL (default: the hosted reference instance; set to override the default) |
+| `BATONDECK_TOKEN` | a Google ID token (audience = core URL) — bring your own, or leave unset to mint |
+| `BATONDECK_AGENT_SA` | mint a token by impersonating your agent's service account |
+| `BATONDECK_ON_BEHALF_OF` | optional on-behalf-of identity (only when authing as a trusted gateway SA) |
+| `BATONDECK_PROJECT` / `BATONDECK_BOARD` | the project/board the worker + fleet operate on |
 
 ## License
 

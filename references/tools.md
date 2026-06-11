@@ -1,7 +1,7 @@
 # BatonDeck tool reference
 
 Connect over Streamable HTTP at the core's `/mcp` endpoint
-(`https://conductor-core-hn5syhhsja-el.a.run.app/mcp` for the hosted instance) with an
+(`https://mcp.batondeck.com/mcp` for the hosted instance) with an
 `Authorization: Bearer <Google ID token>` header whose audience is the core URL. The core is public
 and self-enforces auth (OAuth 2.0 Protected Resource Metadata at
 `/.well-known/oauth-protected-resource`, RFC 9728; `401` carries a `WWW-Authenticate` challenge). See
