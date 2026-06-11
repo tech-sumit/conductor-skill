@@ -1,3 +1,5 @@
+> **Superseded by [conductor-plugin](https://github.com/tech-sumit/conductor-plugin)** — the installable plugin (Claude Code + Cursor marketplaces, release zips) built from this content. This repo remains as the source archive.
+
 # conductor-skill
 
 An installable agent skill for **[Conductor](https://github.com/tech-sumit/conductor)** — the
