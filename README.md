@@ -35,7 +35,7 @@ script path is kept as an optional advanced/headless option.
    it whenever you ask it to plan or work the Conductor board.
 3. **MCP server** — enable `conductor` in **Cursor Settings → MCP**. `.cursor/mcp.json` already points
    `mcp-remote` at the hosted MCP endpoint (`https://conductor-mcp-…/mcp`); on first use Cursor opens a
-   browser to sign in with Google, then the tools are available natively. For a self-hosted core, change
+   browser to sign in with Google, then the tools are available natively. To point at a different core URL, change
    the URL in `.cursor/mcp.json` to your own mcp-gateway `/mcp`.
 4. **Or skip MCP** and let the agent use the terminal scripts directly — see the advanced Quickstart.
 
@@ -84,7 +84,7 @@ Every `tool { … }` in the rule/skill maps to `scripts/mcp.sh tool '{ … }'`.
 
 | env | meaning |
 |---|---|
-| `CONDUCTOR_CORE_URL` | core base URL (default: the hosted reference instance; set for self-hosted) |
+| `CONDUCTOR_CORE_URL` | core base URL (default: the hosted reference instance; set to override the default) |
 | `CONDUCTOR_TOKEN` | a Google ID token (audience = core URL) — bring your own, or leave unset to mint |
 | `CONDUCTOR_AGENT_SA` | mint a token by impersonating your agent's service account |
 | `CONDUCTOR_ON_BEHALF_OF` | optional on-behalf-of identity (only when authing as a trusted gateway SA) |
