@@ -31,12 +31,13 @@ RATE_LIMITED, INTERNAL.
 ## Lifecycle (leases)
 - `claim_task { projectId, taskId, leaseSeconds? }` → `{ leaseId, task }`
 - `heartbeat_task { projectId, taskId, leaseId }` / `release_task { ... leaseId }`
-- `complete_task { ... leaseId }` / `block_task { ... leaseId, reason, blockedBy? }`
+- `complete_task { ... leaseId, deliverable? }` — pass `deliverable` (result/summary or link) so unblocked tasks can build on it via `includeUpstream`; it's stored on the ticket / `block_task { ... leaseId, reason, blockedBy? }`
 - `handoff_task { ... leaseId, toAgent, memoryNote }`
-- `next_task { projectId, boardId, capabilities? }`
+- `next_task { projectId, boardId, capabilities?, assignee? }` — highest-priority claimable READY task (or null). Pass `assignee` to pull only tickets the board routed to that agent name.
+- `wait_for_task { projectId, boardId, capabilities?, assignee?, timeoutSec? }` — long-poll `next_task`: blocks until a claimable task appears (default 25s, max 50s; `{task:null}` on timeout), re-call in a loop. With `assignee`, it's your **board-assignment inbox** — wakes only on tickets assigned to that name. Then `claim_task` the result.
 
 ## Context / graph / media
-- `get_task_context { projectId, taskId, include?, limit?, cursor? }`
+- `get_task_context { projectId, taskId, include?, includeUpstream?, limit?, cursor? }` → also returns this task's `deliverable`; with `includeUpstream:true`, an `upstream[]` of the deliverables (+title/status/summary) of the tasks it depended on — build on those outputs
 - `write_memory { projectId, taskId, scope, key, value? | largeArtifact?, ttl? }` / `read_memory { projectId, taskId, scope?, key? }`
 - `add_dependency { projectId, fromTaskId, toTaskId, type? }` / `remove_dependency { projectId, edgeId }`
 - `add_subtask { projectId, parentTaskId, title }` / `list_subtasks { projectId, parentTaskId }`
